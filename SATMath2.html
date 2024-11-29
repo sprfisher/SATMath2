@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SAT MATH PRACTICE Quiz Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 20px;
+            width: 60%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+        }
+        .quiz-content {
+            flex: 3;
+        }
+        .score-container {
+            flex: 1;
+            margin-left: 20px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .stimulus {
+            background-color: #f0f4c3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            margin-bottom: 20px;
+        }
+        .answer-button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #42a5f5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .answer-button:hover {
+            background-color: #1e88e5;
+        }
+        #explanation {
+            background-color: #fff3cd;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        #next-btn {
+            margin-top: 20px;
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #next-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-content">
+            <h1>Quiz</h1>
+            <div id="name-section">
+                <label for="name">Hey there, enter your name?:</label>
+                <input type="text" id="name" placeholder="Connar?" required>
+                <button id="start-btn">Start Quiz</button>
+            </div>
+            <div id="quiz-section" style="display:none;">
+                <div id="stimulus" class="stimulus"></div>
+                <p class="question-number" id="question-number"></p>
+                <p class="question-text" id="question-text"></p>
+                <div id="choices-container"></div>
+                <div id="explanation"></div>
+                <button id="next-btn">Next Question</button>
+            </div>
+            <div id="result-section" style="display:none;">
+                <h2>Quiz Completed!</h2>
+                <p id="result-text"></p>
+            </div>
+        </div>
+        <div class="score-container">
+            <p>Correct Answers So Far:</p>
+            <p id="score-counter">0</p>
+        </div>
+    </div>
+
+    <script>
+const questions = [
+    {
+        question: "If x + y = 10 and y = 6, what is the value of x?",
+        choices: [
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        correctAnswer: 0,
+        explanation: "Substitute y = 6 into the equation x + y = 10. This becomes x + 6 = 10. Subtract 6 from both sides to find x = 4."
+    },
+    {
+        question: "What is the least common multiple (LCM) of 4 and 6?",
+        choices: [
+            "12",
+            "24",
+            "6",
+            "4"
+        ],
+        correctAnswer: 0,
+        explanation: "The LCM of 4 and 6 is the smallest number divisible by both. Multiples of 4: {4, 8, 12...}. Multiples of 6: {6, 12...}. The smallest common multiple is 12."
+    },
+    {
+        question: "Simplify: (2x + 3) + (4x - 5).",
+        choices: [
+            "6x - 8",
+            "6x - 2",
+            "2x + 8",
+            "4x - 2"
+        ],
+        correctAnswer: 1,
+        explanation: "Combine like terms: 2x + 4x = 6x, and 3 - 5 = -2. The result is 6x - 2."
+    },
+    {
+        question: "If the length of a circle's radius is 7, what is its area? (Use π ≈ 3.14)",
+        choices: [
+            "49π",
+            "153.86",
+            "154",
+            "100"
+        ],
+        correctAnswer: 1,
+        explanation: "The area of a circle is given by A = πr². Substitute r = 7: A = 3.14 × (7 × 7) = 153.86."
+    },
+    {
+        question: "If a line has the equation y = 3x - 7, what is its y-intercept?",
+        choices: [
+            "-7",
+            "3",
+            "7",
+            "0"
+        ],
+        correctAnswer: 0,
+        explanation: "In the equation y = mx + b, the y-intercept is the value of b. Here, b = -7."
+    },
+    {
+        question: "Solve for x: 5x - 2 = 3x + 6.",
+        choices: [
+            "4",
+            "-4",
+            "2",
+            "-2"
+        ],
+        correctAnswer: 2,
+        explanation: "First, subtract 3x from both sides: 2x - 2 = 6. Then add 2 to both sides: 2x = 8. Finally, divide by 2: x = 4."
+    },
+    {
+        question: "What is the mean (average) of the set: {4, 8, 6, 10, 12}?",
+        choices: [
+            "8",
+            "9",
+            "7",
+            "10"
+        ],
+        correctAnswer: 1,
+        explanation: "The mean is the sum of all values divided by the number of values. (4 + 8 + 6 + 10 + 12) ÷ 5 = 40 ÷ 5 = 8."
+    },
+    {
+        question: "What is the value of x if 7x + 2 = 30?",
+        choices: [
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        correctAnswer: 3,
+        explanation: "Subtract 2 from both sides: 7x = 28. Then divide by 7: x = 28 ÷ 7 = 4."
+    },
+    {
+        question: "If 5y = 25, what is the value of y?",
+        choices: [
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        correctAnswer: 3,
+        explanation: "Divide both sides by 5: y = 25 ÷ 5 = 5."
+    },
+    {
+        question: "What is the perimeter of a rectangle with a length of 6 and a width of 3?",
+        choices: [
+            "18",
+            "15",
+            "20",
+            "24"
+        ],
+        correctAnswer: 0,
+        explanation: "Perimeter = 2(length + width). Substitute: 2(6 + 3) = 2 × 9 = 18."
+    },
+    {
+        question: "If x² = 49, what is the value of x?",
+        choices: [
+            "7",
+            "-7",
+            "7 and -7",
+            "0"
+        ],
+        correctAnswer: 2,
+        explanation: "Take the square root of both sides: x = ±7. If you chose just 7 or -7, remember there are two possible solutions."
+    },
+    {
+        question: "What is the equation of a line with a slope of 5 and y-intercept of -2?",
+        choices: [
+            "y = 5x + 2",
+            "y = -5x - 2",
+            "y = 5x - 2",
+            "y = -5x + 2"
+        ],
+        correctAnswer: 2,
+        explanation: "In slope-intercept form y = mx + b, substitute m = 5 and b = -2 to get y = 5x - 2."
+    },
+    {
+        question: "If the side length of a square is doubled, what happens to its area?",
+        choices: [
+            "It doubles.",
+            "It quadruples.",
+            "It stays the same.",
+            "It triples."
+        ],
+        correctAnswer: 1,
+        explanation: "The area of a square is s². If the side length doubles, the new area becomes (2s)² = 4s², meaning the area quadruples."
+    },
+    {
+        question: "What is the distance between the points (3, 4) and (0, 0)?",
+        choices: [
+            "5",
+            "7",
+            "9",
+            "3"
+        ],
+        correctAnswer: 0,
+        explanation: "Use the distance formula: √((x₂ - x₁)² + (y₂ - y₁)²). Here: √((3 - 0)² + (4 - 0)²) = √(9 + 16) = √25 = 5."
+    },
+    {
+        question: "Simplify: 6(3x - 2) = ?",
+        choices: [
+            "18x - 2",
+            "18x + 12",
+            "18x - 12",
+            "9x - 12"
+        ],
+        correctAnswer: 2,
+        explanation: "Distribute the 6: 6 × 3x = 18x, and 6 × -2 = -12. The simplified expression is 18x - 12."
+    },
+    {
+        question: "If a line passes through points (2, 3) and (4, 7), what is its slope?",
+        choices: [
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        correctAnswer: 1,
+        explanation: "Slope = (change in y) ÷ (change in x). Here: (7 - 3) ÷ (4 - 2) = 4 ÷ 2 = 2."
+    },
+    {
+        question: "If the radius of a circle is doubled, what happens to its area?",
+        choices: [
+            "It doubles.",
+            "It quadruples.",
+            "It stays the same.",
+            "It triples."
+        ],
+        correctAnswer: 1,
+        explanation: "The area of a circle is πr². If the radius is doubled, the new area becomes π(2r)² = 4πr², quadrupling the area."
+    },
+    {
+        question: "Solve for x: 2x - 5 = 11.",
+        choices: [
+            "6",
+            "7",
+            "8",
+            "9"
+        ],
+        correctAnswer: 2,
+        explanation: "Add 5 to both sides: 2x = 16. Then divide by 2: x = 16 ÷ 2 = 8."
+    }
+];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userName = "";
+
+        const nameSection = document.getElementById('name-section');
+        const quizSection = document.getElementById('quiz-section');
+        const resultSection = document.getElementById('result-section');
+        const stimulusElement = document.getElementById('stimulus');
+        const questionNumberElement = document.getElementById('question-number');
+        const questionTextElement = document.getElementById('question-text');
+        const choicesContainer = document.getElementById('choices-container');
+        const explanationElement = document.getElementById('explanation');
+        const nextButton = document.getElementById('next-btn');
+        const scoreCounter = document.getElementById('score-counter');
+        const nameInput = document.getElementById('name');
+        const startButton = document.getElementById('start-btn');
+        const resultText = document.getElementById('result-text');
+
+        startButton.addEventListener('click', () => {
+            userName = nameInput.value.trim();
+            if (!userName) {
+                alert("Please enter your name to start the quiz.");
+                return;
+            }
+            nameSection.style.display = 'none';
+            quizSection.style.display = 'block';
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionNumberElement.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            stimulusElement.textContent = currentQuestion.stimulus;
+            questionTextElement.textContent = currentQuestion.question;
+            choicesContainer.innerHTML = '';
+            explanationElement.style.display = 'none';
+            nextButton.style.display = 'none';
+
+            currentQuestion.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-button';
+                button.textContent = choice;
+                button.addEventListener('click', () => checkAnswer(index));
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+            explanationElement.style.display = 'block';
+
+            if (selectedIndex === currentQuestion.correctAnswer) {
+                explanationElement.textContent = "Correct! " + currentQuestion.explanation;
+                score++;
+                scoreCounter.textContent = score; // Update score counter
+                nextButton.style.display = 'block';
+            } else {
+                explanationElement.textContent = "Incorrect. " + currentQuestion.explanation;
+                nextButton.style.display = 'block';
+            }
+        }
+
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        });
+
+        function endQuiz() {
+            quizSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            resultText.textContent = `${userName}, you scored ${score} out of ${questions.length}!`;
+        }
+    </script>
+</body>
+</html>
